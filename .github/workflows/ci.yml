@@ -1,4 +1,7 @@
-name: Rust
+name: ci
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   push:
@@ -16,7 +19,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build
+    - name: build
       run: cargo build --verbose
-    - name: Run tests
+    - name: run tests
       run: cargo test --verbose
