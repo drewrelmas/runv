@@ -1,2 +1,6 @@
 # target files / build output
-target/**/*.*
+target/
+
+# data files
+data/*
+!data/README.md
