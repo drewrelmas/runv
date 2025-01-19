@@ -5,12 +5,10 @@ pub fn unzip_file(zip_path: &str, output_dir: &str) -> zip::result::ZipResult<()
     Ok(())
 }
 
-pub fn decompress_gz(gz_path: &str, output_file: Option<&str>) -> std::io::Result<()> { 
+pub fn decompress_gz(gz_path: &str, output_file: &str) -> std::io::Result<()> { 
     let file = open_file(gz_path)?;
     let mut gz_reader = flate2::read::GzDecoder::new(file);
-    // If no output file is provided, remove the .gz extension from the input file name
-    let output_file_path = output_file.unwrap_or(gz_path.trim_end_matches(".gz"));
-    let mut output_file = std::fs::File::create(output_file_path)?;
+    let mut output_file = std::fs::File::create(output_file)?;
     std::io::copy(&mut gz_reader, &mut output_file)?;
     Ok(())
 }
@@ -37,13 +35,8 @@ mod tests {
 
     #[test]
     fn test_decompress_gzip_file() { 
-        assert!(decompress_gz("tests/data/activity.tcx.gz", Some("tests/out/explicitactivity.tcx")).is_ok()); 
+        let explicit_result = decompress_gz("tests/data/activity.tcx.gz", "tests/out/explicitactivity.tcx");
+        assert!(explicit_result.is_ok()); 
         assert!(std::path::Path::new("tests/out/explicitactivity.tcx").exists());
-    }
-
-    #[test]
-    fn test_decompress_gzip_file_default() { 
-        assert!(decompress_gz("tests/data/activity.tcx.gz", None).is_ok()); 
-        assert!(std::path::Path::new("tests/out/activity.tcx").exists());
     }
 }
