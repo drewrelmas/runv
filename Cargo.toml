@@ -3,3 +3,5 @@ name = "runv"
 version = "0.0.1"
 
 [dependencies]
+zip = "2.2.2"
+flate2 = "1.0.35"
