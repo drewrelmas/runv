@@ -44,12 +44,10 @@ mod tests {
 
     #[test]
     fn test_decompress_gzip_file() { 
-        let explicit_result = decompress_gz("tests/data/activity.tcx.gz", Some("tests/out/explicitactivity.tcx"));
-        assert!(explicit_result.is_ok()); 
+        assert!(decompress_gz("tests/data/activity.tcx.gz", Some("tests/out/explicitactivity.tcx")).is_ok()); 
         assert!(std::path::Path::new("tests/out/explicitactivity.tcx").exists());
 
-        let implicit_result = decompress_gz("tests/data/activity.tcx.gz", None);
-        assert!(implicit_result.is_ok()); 
+        assert!(decompress_gz("tests/data/activity.tcx.gz", None).is_ok()); 
         assert!(std::path::Path::new("tests/data/activity.tcx").exists());
         // clean up
         std::fs::remove_file("tests/data/activity.tcx").unwrap();
