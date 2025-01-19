@@ -32,13 +32,10 @@ mod tests {
     }
 
     #[test]
-    fn test_unzip_file_explicit() { 
+    fn test_unzip_zip_file() { 
         assert!(unzip_file("tests/data/sometextfile.zip", Some("tests/out/sometextfile")).is_ok()); 
         assert!(std::path::Path::new("tests/out/sometextfile/sometextfile.txt").exists());
-    }
 
-    #[test]
-    fn test_unzip_file_implicit() { 
         assert!(unzip_file("tests/data/sometextfile.zip", None).is_ok()); 
         assert!(std::path::Path::new("tests/data/sometextfile/sometextfile.txt").exists());
         // clean up
@@ -46,14 +43,11 @@ mod tests {
     }
 
     #[test]
-    fn test_decompress_gzip_file_explicit() { 
+    fn test_decompress_gzip_file() { 
         let explicit_result = decompress_gz("tests/data/activity.tcx.gz", Some("tests/out/explicitactivity.tcx"));
         assert!(explicit_result.is_ok()); 
         assert!(std::path::Path::new("tests/out/explicitactivity.tcx").exists());
-    }
 
-    #[test]
-    fn test_decompress_gzip_file_implicit() {
         let implicit_result = decompress_gz("tests/data/activity.tcx.gz", None);
         assert!(implicit_result.is_ok()); 
         assert!(std::path::Path::new("tests/data/activity.tcx").exists());
