@@ -1,14 +1,18 @@
-pub fn unzip_file(zip_path: &str, output_dir: &str) -> zip::result::ZipResult<()> { 
+pub fn unzip_file(zip_path: &str, output_path: Option<&str>) -> zip::result::ZipResult<()> { 
     let file = open_file(zip_path)?;
+    // If no output file is provided, remove the .gz extension from the input file name
+    let calculated_output_path = output_path.unwrap_or(zip_path.trim_end_matches(".zip"));
     let mut zip_reader = zip::ZipArchive::new(file)?;
-    zip_reader.extract(output_dir)?;
+    zip_reader.extract(calculated_output_path)?;
     Ok(())
 }
 
-pub fn decompress_gz(gz_path: &str, output_file: &str) -> std::io::Result<()> { 
+pub fn decompress_gz(gz_path: &str, output_path: Option<&str>) -> std::io::Result<()> { 
     let file = open_file(gz_path)?;
     let mut gz_reader = flate2::read::GzDecoder::new(file);
-    let mut output_file = std::fs::File::create(output_file)?;
+    // If no output file is provided, remove the .gz extension from the input file name
+    let calculated_output_path = output_path.unwrap_or(gz_path.trim_end_matches(".gz"));
+    let mut output_file = std::fs::File::create(calculated_output_path)?;
     std::io::copy(&mut gz_reader, &mut output_file)?;
     Ok(())
 }
@@ -28,15 +32,32 @@ mod tests {
     }
 
     #[test]
-    fn test_unzip_file() { 
-        assert!(unzip_file("tests/data/sometextfile.zip", "tests/out/sometextfile").is_ok()); 
+    fn test_unzip_file_explicit() { 
+        assert!(unzip_file("tests/data/sometextfile.zip", Some("tests/out/sometextfile")).is_ok()); 
         assert!(std::path::Path::new("tests/out/sometextfile/sometextfile.txt").exists());
     }
 
     #[test]
-    fn test_decompress_gzip_file() { 
-        let explicit_result = decompress_gz("tests/data/activity.tcx.gz", "tests/out/explicitactivity.tcx");
+    fn test_unzip_file_implicit() { 
+        assert!(unzip_file("tests/data/sometextfile.zip", None).is_ok()); 
+        assert!(std::path::Path::new("tests/data/sometextfile/sometextfile.txt").exists());
+        // clean up
+        std::fs::remove_dir_all(std::path::Path::new("tests/data/sometextfile")).unwrap();
+    }
+
+    #[test]
+    fn test_decompress_gzip_file_explicit() { 
+        let explicit_result = decompress_gz("tests/data/activity.tcx.gz", Some("tests/out/explicitactivity.tcx"));
         assert!(explicit_result.is_ok()); 
         assert!(std::path::Path::new("tests/out/explicitactivity.tcx").exists());
+    }
+
+    #[test]
+    fn test_decompress_gzip_file_implicit() {
+        let implicit_result = decompress_gz("tests/data/activity.tcx.gz", None);
+        assert!(implicit_result.is_ok()); 
+        assert!(std::path::Path::new("tests/data/activity.tcx").exists());
+        // clean up
+        std::fs::remove_file("tests/data/activity.tcx").unwrap();
     }
 }
