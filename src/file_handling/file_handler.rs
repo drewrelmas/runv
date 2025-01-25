@@ -32,13 +32,16 @@ mod tests {
     }
 
     #[test]
+    fn test_open_file() { 
+        assert!(open_file("tests/data/sample.tcx").is_ok()); 
+    }
+
+    #[test]
     fn test_unzip_zip_file() { 
         assert!(unzip_file("tests/data/sometextfile.zip", Some("tests/out/sometextfile")).is_ok()); 
-        std::thread::sleep(std::time::Duration::from_millis(5));
         assert!(std::path::Path::new("tests/out/sometextfile/sometextfile.txt").exists());
 
         assert!(unzip_file("tests/data/sometextfile.zip", None).is_ok()); 
-        std::thread::sleep(std::time::Duration::from_millis(5));
         assert!(std::path::Path::new("tests/data/sometextfile/sometextfile.txt").exists());
         // clean up
         std::fs::remove_dir_all(std::path::Path::new("tests/data/sometextfile")).unwrap();
@@ -47,11 +50,9 @@ mod tests {
     #[test]
     fn test_decompress_gzip_file() { 
         assert!(decompress_gz("tests/data/activity.tcx.gz", Some("tests/out/explicitactivity.tcx")).is_ok()); 
-        std::thread::sleep(std::time::Duration::from_millis(5));
         assert!(std::path::Path::new("tests/out/explicitactivity.tcx").exists());
 
         assert!(decompress_gz("tests/data/activity.tcx.gz", None).is_ok()); 
-        std::thread::sleep(std::time::Duration::from_millis(5));
         assert!(std::path::Path::new("tests/data/activity.tcx").exists());
         // clean up
         std::fs::remove_file("tests/data/activity.tcx").unwrap();
