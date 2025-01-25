@@ -1,7 +1,11 @@
 [package]
 name = "runv"
 version = "0.0.1"
+edition = "2021"
 
 [dependencies]
 zip = "2.2.2"
 flate2 = "1.0.35"
+opentelemetry = "0.27"
+opentelemetry_sdk = { version= "0.27.1", features = ["trace", "metrics", "logs", "rt-tokio"] }
+opentelemetry-stdout = { version = "0.27", features = ["trace", "metrics", "logs"] }
