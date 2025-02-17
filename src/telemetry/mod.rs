@@ -9,7 +9,7 @@ use opentelemetry_sdk::trace::SdkTracerProvider;
 // logging
 use opentelemetry_sdk::logs::SdkLoggerProvider;
 use opentelemetry_appender_tracing::layer;
-use tracing_subscriber::prelude::*;
+use tracing_subscriber::{prelude::*, EnvFilter};
 
 // metrics
 use opentelemetry_sdk::metrics::SdkMeterProvider;
@@ -49,7 +49,8 @@ fn init_logging() -> SdkLoggerProvider {
         .with_resource(RESOURCE.clone())
         .with_simple_exporter(LogExporter::default())
         .build();
-    let layer = layer::OpenTelemetryTracingBridge::new(&provider);
+    let filter = EnvFilter::new("info");
+    let layer = layer::OpenTelemetryTracingBridge::new(&provider).with_filter(filter);
     tracing_subscriber::registry().with(layer).init();
     provider
 }
