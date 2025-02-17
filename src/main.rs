@@ -1,5 +1,6 @@
 mod file_handling;
 mod telemetry;
+mod ui;
 mod app;
 
 use file_handling::file_handler;

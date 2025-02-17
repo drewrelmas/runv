@@ -1,15 +1,17 @@
-use crate::file_handling;
+use egui::Id;
+
+use crate::ui;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
 pub struct RunVApp {
-    picked_path: Option<String>
+    selected_zip: Option<String>
 }
 
 impl Default for RunVApp {
     fn default() -> Self {
         Self {
-            picked_path: None
+            selected_zip: None
         }
     }
 }
@@ -17,7 +19,7 @@ impl Default for RunVApp {
 impl RunVApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         // Adjust scale factor for high resolution displays
-        cc.egui_ctx.set_pixels_per_point(3.0);
+        cc.egui_ctx.set_pixels_per_point(2.0);
         
         Default::default()
     }
@@ -47,11 +49,10 @@ impl eframe::App for RunVApp {
             });
         });
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            // The central panel the region left after adding TopPanel's and SidePanel's
-            ui.heading("Working archive");
+        egui::SidePanel::left(Id::new("navigation")).show(ctx, |ui| {
+            
 
-            file_handling::file_picker::picker_ui(ui, &mut self.picked_path);
+            ui::file_picker::picker_ui(ui, &mut self.selected_zip);
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 powered_by_egui_and_eframe(ui);
