@@ -22,14 +22,14 @@ static RESOURCE: Lazy<Resource> = Lazy::new(|| {
         .build()
 });
 
-pub fn init_telemetry() -> (SdkTracerProvider, SdkLoggerProvider, SdkMeterProvider) {
+pub fn init_telemetry() -> (SdkTracerProvider, SdkMeterProvider, SdkLoggerProvider) {
     let tracer_provider = init_tracing();
-    let logger_provider = init_logging();
     let meter_provider = init_metrics();
-    (tracer_provider, logger_provider, meter_provider)
+    let logger_provider = init_logging();
+    (tracer_provider, meter_provider, logger_provider)
 }
 
-pub fn shutdown_telemetry(providers: (SdkTracerProvider, SdkLoggerProvider, SdkMeterProvider)) {
+pub fn shutdown_telemetry(providers: (SdkTracerProvider, SdkMeterProvider, SdkLoggerProvider)) {
     let _ = providers.0.shutdown();
     let _ = providers.1.shutdown();
     let _ = providers.2.shutdown();

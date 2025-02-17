@@ -6,10 +6,11 @@ use opentelemetry::{global, trace::{Tracer, TracerProvider}};
 use tracing::info;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let providers = telemetry::init_telemetry();
     do_some_work();
     telemetry::shutdown_telemetry(providers);
+    Ok(())
 }
 
 fn do_some_work() {
